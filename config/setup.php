@@ -12,8 +12,8 @@
 
 	
 	$pdo = $Dbo->getConnection();
-	
-echo "connected";	
+
+echo "connected";
 
 	try
 	{
@@ -33,80 +33,87 @@ echo "connected";
 		`group_type` int(11) DEFAULT NULL,
 		`activation_key` varbinary(16) DEFAULT NULL,
 		`forgot_key` varbinary(16) DEFAULT NULL
-	  ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-	  $stmt->execute();
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		$stmt->execute();
 
-	  $stmt = $pdo->query("INSERT INTO `users` (`id`, `email`, `verified`, `bio`, `propic`, `username`, `password`, `salt`, `joined`, `group_type`, `activation_key`, `forgot_key`) VALUES
+	  /*$stmt = $pdo->query("INSERT INTO `users` (`id`, `email`, `verified`, `bio`, `propic`, `username`, `password`, `salt`, `joined`, `group_type`, `activation_key`, `forgot_key`) VALUES
 	  (22, 'camagru@mailinator.com', 1, NULL, NULL, 'tester', '', '1', '2018-12-04 01:27:25', 1, 0xc744aa635a801ee41c49, 0x30),
 	  (23, 'camagrutest@mailinator.com', 1, NULL, NULL, 'mailtester', '', '1', '2018-12-04 06:01:39', 1, 0x02c77f195874015f583c, NULL),
 	  (24, 'noellemostert@gmail.com', 0, NULL, NULL, 'nmostert', '', '1', '2018-12-16 08:56:47', 1, 0xfbf5894c790c86e39121, NULL)");
+	  $stmt->execute();*/
+
+	  $stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `comments`
+	  (`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	  `comment` varchar(150) NOT NULL,
+	  `image_id` int(11) NOT NULL,
+	  `username` varchar(20) NOT NULL
+	  ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	  $stmt->execute();
-	}
-	catch (\PDOException $e)
-	{
-		die($e->getMessage());
-	}
 
-
-/*require_once './database.php';
-	
-	$pdo = DB::getConnection();
-	try
-	{
-		$stmt = $pdo->query("CREATE DATABASE IF NOT EXISTS db_camagru");
-		$stmt->execute();
-		
-		$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL  AUTO_INCREMENT PRIMARY KEY,
-  `user_name` varchar(15) NOT NULL UNIQUE,
-  `first_name` varchar(25) NOT NULL,
-  `last_name` varchar(25) NOT NULL,
-  `email` text NOT NULL,
-  `hash` text NOT NULL,
-  `avatar` mediumblob,
-  `type` text,
-  `em_subs` tinyint(1) NOT NULL DEFAULT '1',
-  `verified` tinyint(1) NOT NULL DEFAULT '0',
-  `verification_key` varbinary(10) DEFAULT NULL,
-  `forgot_key` varbinary(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		$stmt->execute();
-		
-		
-		$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `images` (
-  `id` int(11)  NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `user_id` int(11) NOT NULL,
-  `src` mediumblob NOT NULL,
-  `creation_date` datetime NOT NULL,
-  `type` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		$stmt->execute();
-		
-		
-		$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS`events` (
+	$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `event` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `type` enum('comment','like') NOT NULL,
+  `event` enum('like','comment') NOT NULL,
   `img_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `message` varchar(255) DEFAULT NULL
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+	$stmt->execute();
+
+$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `gallery`(
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `img_id` varchar(100) NOT NULL COMMENT 'datetime + user_id',
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		$stmt->execute();
-	$stmt = $pdo->query("ALTER TABLE `events` ADD CONSTRAINT `img_id` FOREIGN KEY (`img_id`) REFERENCES `images`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; ALTER TABLE `events` ADD CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;");
-		$stmt->execute();
-		
-		$stmt = $pdo->query("INSERT INTO `users` (`user_name`, `first_name`, `last_name`, `email`, `hash`, `avatar`, `type`, `em_subs`, `verified`, `verification_key`, `forgot_key`) VALUES
-( 'Fred-Dee', 'Fred', 'Dilapisho', 'fred.dilapisho@mailinator.com', '', NULL, NULL, 1, 1, NULL, 0x2c07a9a73044d40527f1),
-('Tester', 'Fred', 'Dilapisho', 'fred.dilapisho@mailinator.com', '', NULL, NULL, 0, 1, NULL, NULL),
-('KGart', 'Kyle', 'Gartland', 'fred.dilapisho@gmail.com', '', NULL, NULL, 1, 1, 0x8918b41d6891917ae328, NULL),
-('JDee', 'Jonathan', 'Dilapisho', 'fred.dilapisho@mailinator.com', '', NULL, NULL, 1, 1, 0x5aa4b6e590b04dc6e54b, 0xeb50ffa56a00d842b8f7),
-('tmarking2', 'Thato', 'Marking', 'tmarking@mailinator.com', '', NULL, NULL, 1, 1, 0x09ceeb4e4d9c4db09f17, 0x3b600d5424b33b3ba7a7)");
-		$stmt->execute();
-		
-	}
-	
-	catch (\PDOException $e)
+$stmt->execute();
+
+$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `groups_table` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `user_id` int(11) NOT NULL,
+  `permissions` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+$stmt->execute();
+
+
+$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `image_url` mediumblob NOT NULL,
+  `likes` int(11) DEFAULT '0',
+  `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` int(11) NOT NULL,
+  `type` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+$stmt->execute();
+
+$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `likes` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`image_id` int(11) NOT NULL,
+	`username` varchar(20) NOT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+  $stmt->execute();
+
+  $stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `user_sessions` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`user_id` int(11) NOT NULL,
+	`hash` varchar(64) NOT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+   $stmt->execute();
+
+ $stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `verify` (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`name` varchar(80) NOT NULL,
+	`username` varchar(30) NOT NULL,
+	`email` varchar(120) NOT NULL,
+	`password` text NOT NULL,
+	`code` text NOT NULL,
+	`verified` tinyint(1) NOT NULL,
+	`notification` tinyint(1) DEFAULT '1'
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+    $stmt->execute();
+}
+
+catch (\PDOException $e)
 	{
 		die($e->getMessage());
-	}*/
+	}
 	
 ?>
