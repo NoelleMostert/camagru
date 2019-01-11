@@ -22,12 +22,12 @@ if (isset($_GET["token"]))
          $params = array (0 => $username);
          $dbo->query($sql, $params);
          Session::flash('home', 'You have been verified successfully. Please log in now');
-         Redirect::to('index.php');
+         Redirect::to('display.php');
     }
     else
     {
         Session::flash('home', 'Error with your verification link. Please try copy your link again');
-        Redirect::to('index.php');
+        Redirect::to('display.php');
     }
 }
 ?>

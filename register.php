@@ -60,7 +60,7 @@ if(Input::exists()) {
                 }
                 Session::flash('home', 'You have been registered, please check your email and verify your account');
 
-                Redirect::to('index.php');
+                Redirect::to('display.php');
             } catch (Exception $e) {
                 die($e->getMessage());
             }

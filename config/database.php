@@ -23,7 +23,11 @@ it's run when the class is instanciated
 */
     private function __construct(){
         try {
-            $this->_pdo = new PDO( 'mysql:host=' . Config::get('mysql/host') . ';dbname=' . Config::get('mysql/db'), Config::get('mysql/username'), Config::get('mysql/password'), $this->_options);
+
+            $this->_pdo = new PDO( 'mysql:host=' . Config::get('mysql/host') . ';', Config::get('mysql/username'), Config::get('mysql/password'), $this->_options);
+            $dbname = Config::get('mysql/db');
+            $this->_pdo->exec("CREATE DATABASE IF NOT EXISTS $dbname");
+            $this->_pdo->exec("USE $dbname");
             /*
             new PDO arguments
             1) string: defines which DB handler one wants to connect to

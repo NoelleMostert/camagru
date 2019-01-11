@@ -17,8 +17,9 @@ echo "connected";
 
 	try
 	{
-		$stmt = $pdo->query("CREATE DATABASE IF NOT EXISTS db_camagru");
+		$stmt = $pdo->query("CREATE DATABASE IF NOT EXISTS camagru");
 		$stmt->execute();
+
 
 		$stmt = $pdo->query("CREATE TABLE IF NOT EXISTS `users` ( 
 		`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
